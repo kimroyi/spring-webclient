@@ -10,4 +10,6 @@ import java.util.List;
 @Setter
 public class RequestUserDto {
     private List<User> users;
+    private RequestCriteriaDto criteria;
+    private RequestPaginationDto pagination;
 }

@@ -1,7 +1,20 @@
-INSERT INTO users (user_id, username, password) VALUES
-('user1', '이름1', 'password1'),
-('user2', '이름2', 'password2'),
-('user3', '이름3', 'password3');
+INSERT INTO users (user_id, username, password, update_date) VALUES
+('user1', '이름1', 'password1', TIMESTAMP '2024-08-01 10:00:00'),
+('user2', '이름2', 'password2', TIMESTAMP '2024-08-02 10:00:00'),
+('user3', '이름2', 'password3', TIMESTAMP '2024-08-03 10:00:00'),
+('user4', '이름2', 'password', TIMESTAMP '2024-08-03 11:00:00'),
+('user5', '이름2', 'password', TIMESTAMP '2024-08-03 12:00:00'),
+('user6', '이름2', 'password', TIMESTAMP '2024-08-03 13:00:00'),
+('user7', '이름2', 'password', TIMESTAMP '2024-08-03 14:00:00'),
+('user8', '이름2', 'password', TIMESTAMP '2024-08-03 14:00:00'),
+('user9', '이름2', 'password', TIMESTAMP '2024-08-03 14:30:00'),
+('user10', '이름2', 'password', TIMESTAMP '2024-08-03 14:40:00'),
+('user11', '이름2', 'password', TIMESTAMP '2024-08-03 20:00:00'),
+('user12', '이름2', 'password', TIMESTAMP '2024-08-03 23:00:00'),
+('user13', '이름2', 'password', TIMESTAMP '2024-08-03 23:59:00'),
+('user14', '이름2', 'password', TIMESTAMP '2024-08-04 14:00:00'),
+('user15', '이름2', 'password', TIMESTAMP '2024-08-05 14:00:00')
+;
 
 INSERT INTO products (product_id, product_name, price) VALUES
 (1, 'Laptop', 1200),

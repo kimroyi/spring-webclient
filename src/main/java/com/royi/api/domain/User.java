@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -24,4 +25,7 @@ public class User {
 
     @NotEmpty
     private String password;
+
+    @NotEmpty
+    private LocalDateTime updateDate;
 }

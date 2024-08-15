@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     user_id VARCHAR2(20) NOT NULL,
     username VARCHAR2(50) NOT NULL,
     password VARCHAR2(100) NOT NULL,
+    update_date TIMESTAMP,
     PRIMARY KEY (user_id)
 );
 

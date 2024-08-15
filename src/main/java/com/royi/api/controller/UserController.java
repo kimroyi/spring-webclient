@@ -22,8 +22,13 @@ public class UserController {
         return userService.getUsers();
     }
 
+    @PostMapping("/users/search/username")
+    public ResponseUserDto findUsersByUsername(@RequestBody RequestUserDto requestUserDto) {
+        return userService.findUsersByUsername(requestUserDto);
+    }
+
     @PostMapping("/users/search")
-    public ResponseUserDto findUsers(@RequestBody RequestUserDto requestUserDto) {
-        return userService.findUsers(requestUserDto);
+    public ResponseUserDto findUsersByUserNameAndCriteria(@RequestBody RequestUserDto requestUserDto) {
+        return userService.findUsersByUserNameAndCriteria(requestUserDto);
     }
 }

@@ -15,6 +15,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
+      format_sql: true
     defer-datasource-initialization: true
   devtools:
     restart:
@@ -30,3 +31,4 @@ webclient:
 logging:
   level:
     org.springframework.web.reactive.function.client: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
