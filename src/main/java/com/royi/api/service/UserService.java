@@ -1,16 +1,14 @@
 package com.royi.api.service;
 
 import com.royi.api.domain.User;
-import com.royi.api.dto.RequestCriteria;
-import com.royi.api.dto.RequestUser;
-import com.royi.api.dto.ResponsePagination;
-import com.royi.api.dto.ResponseUser;
+import com.royi.api.dto.*;
 import com.royi.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,5 +84,41 @@ public class UserService {
         responseUser.setResponsePagination(paginationDto);
 
         return responseUser; // ResponseUserDto 반환
+    }
+
+    public UserCountResponse getUserCountsWithTotal(UserCountRequest userCountRequest) {
+        List<User> requestedUsers = userCountRequest.getUsers(); // 요청된 User 리스트
+        List<String> usernames = requestedUsers.stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList()); // 각 User의 username 추출
+
+        RequestCriteria criteria = userCountRequest.getCriteria();
+
+        List<Object[]> results = userRepository.findUserCountsWithTotal(usernames, criteria.getFromDate(), criteria.getToDate());
+        List<UserCountResult> userCountResults = new ArrayList<>();
+        long totalCount = 0;
+
+        for (Object[] result : results) {
+            String updateDate = (String) result[0];
+            long count = (long) result[1];
+
+            if (updateDate != null) {
+                UserCountResult userCountResult = UserCountResult.builder()
+                                                                .date(updateDate)
+                                                                .count(count)
+                                                                .build();
+                userCountResults.add(userCountResult);
+            } else {
+                totalCount = count; // Capture the total count when updateDate is NULL
+            }
+        }
+
+        // Create and return a UserCountResponse object
+        UserCountResponse response = new UserCountResponse();
+        response.setOk(true);
+        response.setTotalCount(String.valueOf(totalCount)); // Assuming totalCount is a string
+        response.setUserCountResults(userCountResults);
+
+        return response;
     }
 }

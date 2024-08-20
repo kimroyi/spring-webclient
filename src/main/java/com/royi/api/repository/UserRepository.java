@@ -19,4 +19,23 @@ public interface UserRepository extends JpaRepository<User, String> {
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate
     );
+
+    @Query(value = "SELECT " +
+            "TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS updateDate, " +
+            "COUNT(UPDATE_DATE) AS count " +
+            "FROM USERS " +
+            "WHERE USERNAME IN (:usernames) " +
+            "AND UPDATE_DATE BETWEEN :fromDate AND :toDate " +
+            "GROUP BY TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') " +
+            "UNION ALL " +
+            "SELECT NULL AS updateDate, COUNT(*) AS count " +
+            "FROM USERS " +
+            "WHERE USERNAME IN (:usernames) " +
+            "AND UPDATE_DATE BETWEEN :fromDate AND :toDate",
+            nativeQuery = true)
+    List<Object[]> findUserCountsWithTotal(
+            @Param("usernames") List<String> usernames,
+            @Param("fromDate") String fromDate,
+            @Param("toDate") String toDate
+    );
 }

@@ -2,6 +2,8 @@ package com.royi.api.controller;
 
 import com.royi.api.dto.RequestUser;
 import com.royi.api.dto.ResponseUser;
+import com.royi.api.dto.UserCountRequest;
+import com.royi.api.dto.UserCountResponse;
 import com.royi.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +32,10 @@ public class UserController {
     @PostMapping("/users/search")
     public ResponseUser findUsersByUserNameAndCriteria(@RequestBody RequestUser requestUser) {
         return userService.findUsersByUserNameAndCriteria(requestUser);
+    }
+
+    @PostMapping("/users/count")
+    public UserCountResponse getUserCounts(@RequestBody UserCountRequest userCountRequest) {
+        return userService.getUserCountsWithTotal(userCountRequest);
     }
 }
