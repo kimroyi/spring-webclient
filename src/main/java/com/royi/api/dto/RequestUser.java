@@ -8,8 +8,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class RequestUserDto {
+public class RequestUser {
     private List<User> users;
-    private RequestCriteriaDto criteria;
-    private RequestPaginationDto pagination;
+    private RequestCriteria criteria;
+    private RequestPagination pagination;
 }

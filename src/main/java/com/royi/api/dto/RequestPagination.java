@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ResponsePaginationDto {
+public class RequestPagination {
     private int startIndex;
     private int pageSize;
     private String order;
-    private int resultCount;
 }

@@ -15,10 +15,10 @@ import java.util.List;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseUserDto {
+public class ResponseUser {
     private boolean ok;
     private List<User> users;
 
     @JsonProperty("pagination")
-    private ResponsePaginationDto responsePagination;
+    private ResponsePagination responsePagination;
 }

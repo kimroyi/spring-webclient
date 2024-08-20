@@ -1,10 +1,10 @@
 package com.royi.api.service;
 
 import com.royi.api.domain.User;
-import com.royi.api.dto.RequestCriteriaDto;
-import com.royi.api.dto.RequestPaginationDto;
-import com.royi.api.dto.RequestUserDto;
-import com.royi.api.dto.ResponseUserDto;
+import com.royi.api.dto.RequestCriteria;
+import com.royi.api.dto.RequestPagination;
+import com.royi.api.dto.RequestUser;
+import com.royi.api.dto.ResponseUser;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,10 +32,10 @@ class UserServiceTest {
         user2.setUsername("이름2");
         users.add(user2);
 
-        RequestUserDto requestUserDto = new RequestUserDto();
-        requestUserDto.setUsers(users);
+        RequestUser requestUser = new RequestUser();
+        requestUser.setUsers(users);
 
-        ResponseUserDto users1 = userService.findUsersByUsername(requestUserDto);
+        ResponseUser users1 = userService.findUsersByUsername(requestUser);
         System.out.println(users1);
     }
 
@@ -52,13 +52,13 @@ class UserServiceTest {
         user2.setUsername("이름2");
         users.add(user2);
 
-        RequestUserDto requestUserDto = new RequestUserDto();
+        RequestUser requestUser = new RequestUser();
 
-        requestUserDto.setUsers(users);
-        requestUserDto.setCriteria(RequestCriteriaDto.builder().fromDate("2024-07-31T00:00:00").toDate("2024-08-01T23:59:59").build());
-        requestUserDto.setPagination(RequestPaginationDto.builder().startIndex(0).pageSize(10).order("DESC").build());
+        requestUser.setUsers(users);
+        requestUser.setCriteria(RequestCriteria.builder().fromDate("2024-07-31T00:00:00").toDate("2024-08-01T23:59:59").build());
+        requestUser.setPagination(RequestPagination.builder().startIndex(0).pageSize(10).order("DESC").build());
 
-        ResponseUserDto users1 = userService.findUsersByUserNameAndCriteria(requestUserDto);
+        ResponseUser users1 = userService.findUsersByUserNameAndCriteria(requestUser);
         System.out.println(users1);
     }
 }

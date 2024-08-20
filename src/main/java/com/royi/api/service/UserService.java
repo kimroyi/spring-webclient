@@ -1,10 +1,10 @@
 package com.royi.api.service;
 
 import com.royi.api.domain.User;
-import com.royi.api.dto.RequestCriteriaDto;
-import com.royi.api.dto.RequestUserDto;
-import com.royi.api.dto.ResponsePaginationDto;
-import com.royi.api.dto.ResponseUserDto;
+import com.royi.api.dto.RequestCriteria;
+import com.royi.api.dto.RequestUser;
+import com.royi.api.dto.ResponsePagination;
+import com.royi.api.dto.ResponseUser;
 import com.royi.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,23 +20,23 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public ResponseUserDto getUsers() {
+    public ResponseUser getUsers() {
         List<User> foundUsers = userRepository.findAll();
-        ResponseUserDto responseUserDto = new ResponseUserDto();
-        responseUserDto.setOk(true);
-        responseUserDto.setUsers(foundUsers);
+        ResponseUser responseUser = new ResponseUser();
+        responseUser.setOk(true);
+        responseUser.setUsers(foundUsers);
 
-        ResponsePaginationDto paginationDto = ResponsePaginationDto.builder()
+        ResponsePagination paginationDto = ResponsePagination.builder()
                 .resultCount(foundUsers.size())
                 .build();
-        responseUserDto.setResponsePagination(paginationDto);
+        responseUser.setResponsePagination(paginationDto);
 
-        return responseUserDto;
+        return responseUser;
     }
 
     // POST 요청으로 전달된 User 리스트에 기반한 검색 로직
-    public ResponseUserDto findUsersByUsername(RequestUserDto requestUserDto) {
-        List<User> requestedUsers = requestUserDto.getUsers(); // 요청된 User 리스트
+    public ResponseUser findUsersByUsername(RequestUser requestUser) {
+        List<User> requestedUsers = requestUser.getUsers(); // 요청된 User 리스트
         List<String> usernames = requestedUsers.stream()
                 .map(User::getUsername)
                 .collect(Collectors.toList()); // 각 User의 username 추출
@@ -45,26 +45,26 @@ public class UserService {
         List<User> foundUsers = userRepository.findByUsernameIn(usernames);
 
         // 검색 결과를 ResponseUserDto로 반환
-        ResponseUserDto responseUserDto = new ResponseUserDto();
-        responseUserDto.setOk(!foundUsers.isEmpty()); // 검색 결과가 비어 있지 않다면 true
-        responseUserDto.setUsers(foundUsers); // 검색된 User 리스트 설정
+        ResponseUser responseUser = new ResponseUser();
+        responseUser.setOk(!foundUsers.isEmpty()); // 검색 결과가 비어 있지 않다면 true
+        responseUser.setUsers(foundUsers); // 검색된 User 리스트 설정
 
-        ResponsePaginationDto paginationDto = ResponsePaginationDto.builder()
+        ResponsePagination paginationDto = ResponsePagination.builder()
                 .resultCount(foundUsers.size())
                 .build();
-        responseUserDto.setResponsePagination(paginationDto);
+        responseUser.setResponsePagination(paginationDto);
 
-        return responseUserDto; // ResponseUserDto 반환
+        return responseUser; // ResponseUserDto 반환
     }
 
-    public ResponseUserDto findUsersByUserNameAndCriteria(RequestUserDto requestUserDto) {
-        List<User> requestedUsers = requestUserDto.getUsers(); // 요청된 User 리스트
+    public ResponseUser findUsersByUserNameAndCriteria(RequestUser requestUser) {
+        List<User> requestedUsers = requestUser.getUsers(); // 요청된 User 리스트
         List<String> usernames = requestedUsers.stream()
                 .map(User::getUsername)
                 .collect(Collectors.toList()); // 각 User의 username 추출
 
         // Parse date range from RequestCriteria
-        RequestCriteriaDto criteria = requestUserDto.getCriteria();
+        RequestCriteria criteria = requestUser.getCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime fromDate = LocalDateTime.parse(criteria.getFromDate(), formatter);
         LocalDateTime toDate = LocalDateTime.parse(criteria.getToDate(), formatter);
@@ -73,18 +73,18 @@ public class UserService {
         List<User> foundUsers = userRepository.findByUsernameInAndUpdateDateBetween(usernames, fromDate, toDate);
 
         // 검색 결과를 ResponseUserDto로 반환
-        ResponseUserDto responseUserDto = new ResponseUserDto();
-        responseUserDto.setOk(!foundUsers.isEmpty()); // 검색 결과가 비어 있지 않다면 true
-        responseUserDto.setUsers(foundUsers); // 검색된 User 리스트 설정
+        ResponseUser responseUser = new ResponseUser();
+        responseUser.setOk(!foundUsers.isEmpty()); // 검색 결과가 비어 있지 않다면 true
+        responseUser.setUsers(foundUsers); // 검색된 User 리스트 설정
 
-        ResponsePaginationDto paginationDto = ResponsePaginationDto.builder()
-                .startIndex(requestUserDto.getPagination().getStartIndex())
-                .startIndex(requestUserDto.getPagination().getStartIndex())
-                .order(requestUserDto.getPagination().getOrder())
+        ResponsePagination paginationDto = ResponsePagination.builder()
+                .startIndex(requestUser.getPagination().getStartIndex())
+                .startIndex(requestUser.getPagination().getStartIndex())
+                .order(requestUser.getPagination().getOrder())
                 .resultCount(foundUsers.size())
                 .build();
-        responseUserDto.setResponsePagination(paginationDto);
+        responseUser.setResponsePagination(paginationDto);
 
-        return responseUserDto; // ResponseUserDto 반환
+        return responseUser; // ResponseUserDto 반환
     }
 }

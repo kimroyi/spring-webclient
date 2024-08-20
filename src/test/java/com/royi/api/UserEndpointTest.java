@@ -1,12 +1,11 @@
 package com.royi.api;
 
 import com.royi.api.domain.User;
-import com.royi.api.dto.RequestCriteriaDto;
-import com.royi.api.dto.RequestPaginationDto;
-import com.royi.api.dto.RequestUserDto;
-import com.royi.api.dto.ResponseUserDto;
+import com.royi.api.dto.RequestCriteria;
+import com.royi.api.dto.RequestPagination;
+import com.royi.api.dto.RequestUser;
+import com.royi.api.dto.ResponseUser;
 import com.royi.api.util.TimeRange;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.util.Pair;
@@ -16,8 +15,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -30,10 +27,10 @@ public class UserEndpointTest {
     void getUsers() {
         WebClient webClient = WebClient.create("http://localhost:8082/api");
 
-        Mono<ResponseUserDto> responseMono = webClient.get()
+        Mono<ResponseUser> responseMono = webClient.get()
                 .uri("/users")
                 .retrieve()
-                .bodyToMono(ResponseUserDto.class);
+                .bodyToMono(ResponseUser.class);
 
         responseMono.subscribe(
                 response -> {
@@ -58,23 +55,23 @@ public class UserEndpointTest {
         user2.setUsername("이름2");
         users.add(user2);
 
-        RequestUserDto requestUserDto = new RequestUserDto();
-        requestUserDto.setUsers(users);
+        RequestUser requestUser = new RequestUser();
+        requestUser.setUsers(users);
 
-        Mono<ResponseUserDto> responseUserDtoMono = webClient.post()
+        Mono<ResponseUser> responseUserDtoMono = webClient.post()
                 .uri("/users/search/username")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(requestUserDto)
+                .bodyValue(requestUser)
                 .retrieve()
-                .bodyToMono(ResponseUserDto.class);
+                .bodyToMono(ResponseUser.class);
 
         responseUserDtoMono.subscribe(
-                responseUserDto -> {
+                responseUser -> {
                     // Handle successful response
-                    System.out.println("Response User DTO: " + responseUserDto);
-                    if (responseUserDto.isOk()) {
+                    System.out.println("Response User DTO: " + responseUser);
+                    if (responseUser.isOk()) {
                         System.out.println("Users found: ");
-                        responseUserDto.getUsers().forEach(System.out::println);
+                        responseUser.getUsers().forEach(System.out::println);
                     } else {
                         System.out.println("No users found or query failed.");
                     }
@@ -101,31 +98,31 @@ public class UserEndpointTest {
         user2.setUsername("이름2");
         users.add(user2);
 
-        RequestUserDto requestUserDto = new RequestUserDto();
-        requestUserDto.setUsers(users);
+        RequestUser requestUser = new RequestUser();
+        requestUser.setUsers(users);
 
-        requestUserDto.setCriteria(RequestCriteriaDto.builder().fromDate("2024-07-31T00:00:00").toDate("2024-08-01T23:59:59").build());
-        requestUserDto.setPagination(RequestPaginationDto.builder().startIndex(0).pageSize(10).order("DESC").build());
+        requestUser.setCriteria(RequestCriteria.builder().fromDate("2024-07-31T00:00:00").toDate("2024-08-01T23:59:59").build());
+        requestUser.setPagination(RequestPagination.builder().startIndex(0).pageSize(10).order("DESC").build());
 
         // 비동기 요청을 시작
-        Mono<ResponseUserDto> responseUserDtoMono = webClient.post()
+        Mono<ResponseUser> responseUserDtoMono = webClient.post()
                 .uri("/users/search")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(requestUserDto)
+                .bodyValue(requestUser)
                 .retrieve()
-                .bodyToMono(ResponseUserDto.class);
+                .bodyToMono(ResponseUser.class);
 
         // Count가 1인 CountDownLatch 생성
         CountDownLatch latch = new CountDownLatch(1);
 
         // 응답이 도착하면 처리를 시작
         responseUserDtoMono.subscribe(
-                responseUserDto -> {
+                responseUser -> {
                     // Handle successful response
-                    System.out.println("Response User DTO: " + responseUserDto);
-                    if (responseUserDto.isOk()) {
+                    System.out.println("Response User DTO: " + responseUser);
+                    if (responseUser.isOk()) {
                         System.out.println("Users found: ");
-                        responseUserDto.getUsers().forEach(System.out::println);
+                        responseUser.getUsers().forEach(System.out::println);
                     } else {
                         System.out.println("No users found or query failed.");
                     }
@@ -178,13 +175,13 @@ public class UserEndpointTest {
 
             LocalDateTime endTime = timeRange.getSecond();
 
-            RequestUserDto requestUserDto = new RequestUserDto();
-            requestUserDto.setUsers(createUserList()); // Implement createUserList() if needed
-            requestUserDto.setCriteria(RequestCriteriaDto.builder()
+            RequestUser requestUser = new RequestUser();
+            requestUser.setUsers(createUserList()); // Implement createUserList() if needed
+            requestUser.setCriteria(RequestCriteria.builder()
                     .fromDate(startTime.toString())
                     .toDate(endTime.toString())
                     .build());
-            requestUserDto.setPagination(RequestPaginationDto.builder()
+            requestUser.setPagination(RequestPagination.builder()
                     .startIndex(startIndex.get()) // Pass the current startIndex
                     .pageSize(pageSize)
                     .order(order)
@@ -194,26 +191,26 @@ public class UserEndpointTest {
             CountDownLatch latch = new CountDownLatch(1);
 
             // Fetch data and accumulate results
-            Mono<ResponseUserDto> responseUserDtoMono = webClient.post()
+            Mono<ResponseUser> responseUserDtoMono = webClient.post()
                     .uri("/users/search")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(requestUserDto)
+                    .bodyValue(requestUser)
                     .retrieve()
-                    .bodyToMono(ResponseUserDto.class);
+                    .bodyToMono(ResponseUser.class);
 
             responseUserDtoMono.subscribe(
-                    responseUserDto -> {
-                        if (responseUserDto.isOk()) {
+                    responseUser -> {
+                        if (responseUser.isOk()) {
                             System.out.println("해당 기간의 검색된 사용자 있음: " + startTime + " to " + endTime);
-                            System.out.println("검색된 사용자 수 : " + responseUserDto.getUsers().size());
-                            System.out.println("검색된 사용자 정보: " + responseUserDto.getUsers());
+                            System.out.println("검색된 사용자 수 : " + responseUser.getUsers().size());
+                            System.out.println("검색된 사용자 정보: " + responseUser.getUsers());
 
                             // Calculate how many users can still be added
                             int remainingSlots = maxResults - allUsers.size();
 
                             // Add only the remaining slots, if not enough slots, continue from the last added user
-                            int usersToAdd = Math.min(responseUserDto.getUsers().size(), remainingSlots);
-                            allUsers.addAll(responseUserDto.getUsers().subList(0, usersToAdd));
+                            int usersToAdd = Math.min(responseUser.getUsers().size(), remainingSlots);
+                            allUsers.addAll(responseUser.getUsers().subList(0, usersToAdd));
 
                             // Update the startIndex to the position where you stopped
                             startIndex.addAndGet(usersToAdd+1);

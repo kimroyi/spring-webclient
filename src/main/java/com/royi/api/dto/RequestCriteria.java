@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class RequestCriteriaDto {
+public class RequestCriteria {
     private String fromDate;
     private String toDate;
 }
